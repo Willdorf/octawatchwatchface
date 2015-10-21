@@ -1,7 +1,9 @@
 #include <pebble.h>
+#include <stdio.h>
 
 static Window *window;
 static Layer *s_layer;
+static TextLayer *s_time_layer;
 
 static BitmapLayer *s_background_layer;
 static GBitmap *s_background_bitmap;
@@ -103,10 +105,16 @@ static void update_time(struct tm *tick_time) {
 
 static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
 	update_time(tick_time);
+
+	static char buffer[] = "00";
+
+	//update minutes
+	strftime(buffer, sizeof("00"), "%M", tick_time);
+	text_layer_set_text(s_time_layer, buffer);
 }
 
 static void draw_watchface(Layer *layer, GContext *ctx) {
-	graphics_context_set_fill_color(ctx, COLOR_FALLBACK(GColorBlueMoon, GColorWhite));
+	graphics_context_set_fill_color(ctx, COLOR_FALLBACK(GColorWindsorTan, GColorWhite));
 	uint8_t cur_time = s_hour % 12;
 
 
@@ -140,6 +148,8 @@ static void draw_watchface(Layer *layer, GContext *ctx) {
 			APP_LOG(APP_LOG_LEVEL_DEBUG, "Invalid Hour %d", cur_time);
 	}
 
+	graphics_context_set_stroke_color(ctx, GColorBlack);
+	graphics_context_set_stroke_width(ctx, 3);
 	switch (cur_time) {
 		case 0:
 			gpath_draw_outline(ctx, twelve_path);
@@ -183,6 +193,7 @@ static void draw_watchface(Layer *layer, GContext *ctx) {
 
 
 	//draw seconds
+	graphics_context_set_fill_color(ctx, COLOR_FALLBACK(GColorRajah, GColorWhite));
 	if (s_sec < 14) {
 		graphics_fill_rect(ctx, GRect(67,34 + (2*s_sec),10,2), 0,0);
 	} else if (s_sec >= 14) {
@@ -191,7 +202,6 @@ static void draw_watchface(Layer *layer, GContext *ctx) {
 
 	if (s_sec >= 15 && s_sec < 29) {
 		uint8_t cur_sec = s_sec - 15;
-		APP_LOG(APP_LOG_LEVEL_DEBUG, "s_sec %d, cur_sec %d", s_sec, cur_sec);
 		graphics_fill_rect(ctx, GRect(120 - (2*cur_sec),79,2,10), 0,0);
 	} else if (s_sec >= 29) {
 		graphics_fill_rect(ctx, GRect(92,64, 2, 40), 0, 0);
@@ -209,6 +219,35 @@ static void draw_watchface(Layer *layer, GContext *ctx) {
 		graphics_fill_rect(ctx, GRect(22 + (2*cur_sec), 79, 2, 10), 0, 0);
 	} else if (s_sec >= 59) {
 		graphics_fill_rect(ctx, GRect(50, 64, 2, 40), 0, 0);
+	}
+
+	//draw minutes
+	graphics_context_set_fill_color(ctx, COLOR_FALLBACK(GColorOrange, GColorWhite));
+	if (s_min < 14) {
+		graphics_fill_rect(ctx, GRect(67,34 + (2*s_min),10,2), 0,0);
+	} else if (s_min >= 14) {
+		graphics_fill_rect(ctx, GRect(52,65, 40, 10), 0, 0);
+	}
+
+	if (s_min >= 15 && s_min < 29) {
+		uint8_t cur_min = s_min - 15;
+		graphics_fill_rect(ctx, GRect(120 - (2*cur_min),79,2,10), 0,0);
+	} else if (s_min >= 29) {
+		graphics_fill_rect(ctx, GRect(82,64, 10, 40), 0, 0);
+	}
+
+	if (s_min >= 30 && s_min < 44) {
+		uint8_t cur_min = s_min - 30;
+		graphics_fill_rect(ctx, GRect(67, 132 - (2*cur_min), 10, 2), 0, 0);
+	} else if (s_min >= 44) {
+		graphics_fill_rect(ctx, GRect(52, 94, 40, 10), 0, 0);
+	}
+
+	if (s_min >= 45 && s_min < 59) {
+		uint8_t cur_min = s_min - 45;
+		graphics_fill_rect(ctx, GRect(22 + (2*cur_min), 79, 2, 10), 0, 0);
+	} else if (s_min >= 59) {
+		graphics_fill_rect(ctx, GRect(53, 64, 10, 40), 0, 0);
 	}
 }
 
@@ -235,6 +274,8 @@ static void window_load(Window *window) {
 	layer_add_child(window_get_root_layer(window), s_layer);
 	layer_set_update_proc(s_layer, draw_watchface);
 
+	window_set_background_color(window, GColorDarkGray);
+
 	//setup the background image
 	s_background_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_OCTAWATCH);
 	s_background_layer = bitmap_layer_create(GRect(0,0,144,168));
@@ -244,11 +285,21 @@ static void window_load(Window *window) {
 	layer_add_child(window_get_root_layer(window), bitmap_layer_get_layer(s_background_layer));
 
 	setup_paths();
+
+	//text layer for displaying minutes in center
+	s_time_layer = text_layer_create(GRect(63, 75, 19, 19));
+	text_layer_set_background_color(s_time_layer, GColorClear);
+	text_layer_set_text_color(s_time_layer, GColorWhite);
+	text_layer_set_font(s_time_layer, fonts_get_system_font(FONT_KEY_GOTHIC_14));
+	text_layer_set_text_alignment(s_time_layer, GTextAlignmentCenter);
+	layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_time_layer));
 }
 
 static void window_unload(Window *window) {
 	gbitmap_destroy(s_background_bitmap);
 	bitmap_layer_destroy(s_background_layer);
+
+	text_layer_destroy(s_time_layer);
 }
 
 static void init(void) {

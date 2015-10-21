@@ -109,7 +109,7 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
 	static char buffer[] = "00";
 
 	//update minutes
-	strftime(buffer, sizeof("00"), "%M", tick_time);
+	strftime(buffer, sizeof("00"), "%S", tick_time);
 	text_layer_set_text(s_time_layer, buffer);
 }
 
@@ -194,59 +194,59 @@ static void draw_watchface(Layer *layer, GContext *ctx) {
 
 	//draw seconds
 	graphics_context_set_fill_color(ctx, COLOR_FALLBACK(GColorRajah, GColorWhite));
-	if (s_sec < 14) {
-		graphics_fill_rect(ctx, GRect(67,34 + (2*s_sec),10,2), 0,0);
-	} else if (s_sec >= 14) {
+	if (s_sec > 0 && s_sec < 15) {
+		graphics_fill_rect(ctx, GRect(67,34 + (2*s_sec) - 2,10,2), 0,0);
+	} else if (s_sec >= 15 || s_sec == 0) {
 		graphics_fill_rect(ctx, GRect(52,62, 40, 2), 0, 0);
 	}
 
-	if (s_sec >= 15 && s_sec < 29) {
+	if (s_sec > 15 && s_sec < 30) {
 		uint8_t cur_sec = s_sec - 15;
-		graphics_fill_rect(ctx, GRect(120 - (2*cur_sec),79,2,10), 0,0);
-	} else if (s_sec >= 29) {
+		graphics_fill_rect(ctx, GRect(120 - (2*cur_sec) + 2,79,2,10), 0,0);
+	} else if (s_sec >= 30 || s_sec == 0) {
 		graphics_fill_rect(ctx, GRect(92,64, 2, 40), 0, 0);
 	}
 
-	if (s_sec >= 30 && s_sec < 44) {
+	if (s_sec > 30 && s_sec < 45) {
 		uint8_t cur_sec = s_sec - 30;
-		graphics_fill_rect(ctx, GRect(67, 132 - (2*cur_sec), 10, 2), 0, 0);
-	} else if (s_sec >= 44) {
+		graphics_fill_rect(ctx, GRect(67, 132 - (2*cur_sec) + 2, 10, 2), 0, 0);
+	} else if (s_sec >= 45 || s_sec == 0) {
 		graphics_fill_rect(ctx, GRect(52, 104, 40, 2), 0, 0);
 	}
 
-	if (s_sec >= 45 && s_sec < 59) {
+	if (s_sec > 45 && s_sec < 60) {
 		uint8_t cur_sec = s_sec - 45;
-		graphics_fill_rect(ctx, GRect(22 + (2*cur_sec), 79, 2, 10), 0, 0);
-	} else if (s_sec >= 59) {
+		graphics_fill_rect(ctx, GRect(22 + (2*cur_sec) - 2, 79, 2, 10), 0, 0);
+	} else if (s_sec == 0) {
 		graphics_fill_rect(ctx, GRect(50, 64, 2, 40), 0, 0);
 	}
 
 	//draw minutes
 	graphics_context_set_fill_color(ctx, COLOR_FALLBACK(GColorOrange, GColorWhite));
-	if (s_min < 14) {
-		graphics_fill_rect(ctx, GRect(67,34 + (2*s_min),10,2), 0,0);
-	} else if (s_min >= 14) {
+	if (s_min > 0 && s_min < 15) {
+		graphics_fill_rect(ctx, GRect(67,34 + (2*s_min) - 2,10,2), 0,0);
+	} else if (s_min >= 15) {
 		graphics_fill_rect(ctx, GRect(52,65, 40, 10), 0, 0);
 	}
 
-	if (s_min >= 15 && s_min < 29) {
+	if (s_min > 15 && s_min < 30) {
 		uint8_t cur_min = s_min - 15;
-		graphics_fill_rect(ctx, GRect(120 - (2*cur_min),79,2,10), 0,0);
-	} else if (s_min >= 29) {
+		graphics_fill_rect(ctx, GRect(120 - (2*cur_min) + 2,79,2,10), 0,0);
+	} else if (s_min >= 30) {
 		graphics_fill_rect(ctx, GRect(82,64, 10, 40), 0, 0);
 	}
 
-	if (s_min >= 30 && s_min < 44) {
+	if (s_min > 30 && s_min < 45) {
 		uint8_t cur_min = s_min - 30;
-		graphics_fill_rect(ctx, GRect(67, 132 - (2*cur_min), 10, 2), 0, 0);
-	} else if (s_min >= 44) {
+		graphics_fill_rect(ctx, GRect(67, 132 - (2*cur_min) + 2, 10, 2), 0, 0);
+	} else if (s_min >= 45) {
 		graphics_fill_rect(ctx, GRect(52, 94, 40, 10), 0, 0);
 	}
 
-	if (s_min >= 45 && s_min < 59) {
+	if (s_min > 45 && s_min < 60) {
 		uint8_t cur_min = s_min - 45;
-		graphics_fill_rect(ctx, GRect(22 + (2*cur_min), 79, 2, 10), 0, 0);
-	} else if (s_min >= 59) {
+		graphics_fill_rect(ctx, GRect(22 + (2*cur_min) - 2, 79, 2, 10), 0, 0);
+	} else if (s_min == 0) {
 		graphics_fill_rect(ctx, GRect(53, 64, 10, 40), 0, 0);
 	}
 }

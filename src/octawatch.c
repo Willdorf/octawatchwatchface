@@ -109,7 +109,7 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
 	static char buffer[] = "00";
 
 	//update minutes
-	strftime(buffer, sizeof("00"), "%S", tick_time);
+	strftime(buffer, sizeof("00"), "%M", tick_time);
 	text_layer_set_text(s_time_layer, buffer);
 }
 

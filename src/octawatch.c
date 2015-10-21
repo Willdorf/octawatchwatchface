@@ -107,18 +107,48 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
 
 static void draw_watchface(Layer *layer, GContext *ctx) {
 	graphics_context_set_fill_color(ctx, COLOR_FALLBACK(GColorSunsetOrange, GColorWhite));
-	gpath_draw_filled(ctx, twelve_path);
-	gpath_draw_filled(ctx, one_path);
-	gpath_draw_filled(ctx, two_path);
-	gpath_draw_filled(ctx, three_path);
-	gpath_draw_filled(ctx, four_path);
-	gpath_draw_filled(ctx, five_path);
-	gpath_draw_filled(ctx, six_path);
-	gpath_draw_filled(ctx, seven_path);
-	gpath_draw_filled(ctx, eight_path);
-	gpath_draw_filled(ctx, nine_path);
-	gpath_draw_filled(ctx, ten_path);
-	gpath_draw_filled(ctx, eleven_path);
+	uint8_t cur_time = s_hour % 12;
+
+	switch (cur_time) {
+		case 0:
+			gpath_draw_filled(ctx, twelve_path);
+			break;
+		case 1:
+			gpath_draw_filled(ctx, one_path);
+			break;
+		case 2:
+			gpath_draw_filled(ctx, two_path);
+			break;
+		case 3:
+			gpath_draw_filled(ctx, three_path);
+			break;
+		case 4:
+			gpath_draw_filled(ctx, four_path);
+			break;
+		case 5:
+			gpath_draw_filled(ctx, five_path);
+			break;
+		case 6:
+			gpath_draw_filled(ctx, six_path);
+			break;
+		case 7:
+			gpath_draw_filled(ctx, seven_path);
+			break;
+		case 8:
+			gpath_draw_filled(ctx, eight_path);
+			break;
+		case 9:
+			gpath_draw_filled(ctx, nine_path);
+			break;
+		case 10:
+			gpath_draw_filled(ctx, ten_path);
+			break;
+		case 11:
+			gpath_draw_filled(ctx, eleven_path);
+			break;
+		default:
+			APP_LOG(APP_LOG_LEVEL_DEBUG, "Invalid Hour %d", cur_time);
+	}
 }
 
 static void setup_paths() {

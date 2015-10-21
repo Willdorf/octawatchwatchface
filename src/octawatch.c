@@ -106,48 +106,109 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
 }
 
 static void draw_watchface(Layer *layer, GContext *ctx) {
-	graphics_context_set_fill_color(ctx, COLOR_FALLBACK(GColorSunsetOrange, GColorWhite));
+	graphics_context_set_fill_color(ctx, COLOR_FALLBACK(GColorBlueMoon, GColorWhite));
 	uint8_t cur_time = s_hour % 12;
 
+
 	switch (cur_time) {
+		case 11:
+			gpath_draw_filled(ctx, eleven_path);
+		case 10:
+			gpath_draw_filled(ctx, ten_path);
+		case 9:
+			gpath_draw_filled(ctx, nine_path);
+		case 8:
+			gpath_draw_filled(ctx, eight_path);
+		case 7:
+			gpath_draw_filled(ctx, seven_path);
+		case 6:
+			gpath_draw_filled(ctx, six_path);
+		case 5:
+			gpath_draw_filled(ctx, five_path);
+		case 4:
+			gpath_draw_filled(ctx, four_path);
+		case 3:
+			gpath_draw_filled(ctx, three_path);
+		case 2:
+			gpath_draw_filled(ctx, two_path);
+		case 1:
+			gpath_draw_filled(ctx, one_path);
 		case 0:
 			gpath_draw_filled(ctx, twelve_path);
 			break;
+		default:
+			APP_LOG(APP_LOG_LEVEL_DEBUG, "Invalid Hour %d", cur_time);
+	}
+
+	switch (cur_time) {
+		case 0:
+			gpath_draw_outline(ctx, twelve_path);
+			break;
 		case 1:
-			gpath_draw_filled(ctx, one_path);
+			gpath_draw_outline(ctx, one_path);
 			break;
 		case 2:
-			gpath_draw_filled(ctx, two_path);
+			gpath_draw_outline(ctx, two_path);
 			break;
 		case 3:
-			gpath_draw_filled(ctx, three_path);
+			gpath_draw_outline(ctx, three_path);
 			break;
 		case 4:
-			gpath_draw_filled(ctx, four_path);
+			gpath_draw_outline(ctx, four_path);
 			break;
 		case 5:
-			gpath_draw_filled(ctx, five_path);
+			gpath_draw_outline(ctx, five_path);
 			break;
 		case 6:
-			gpath_draw_filled(ctx, six_path);
+			gpath_draw_outline(ctx, six_path);
 			break;
 		case 7:
-			gpath_draw_filled(ctx, seven_path);
+			gpath_draw_outline(ctx, seven_path);
 			break;
 		case 8:
-			gpath_draw_filled(ctx, eight_path);
+			gpath_draw_outline(ctx, eight_path);
 			break;
 		case 9:
-			gpath_draw_filled(ctx, nine_path);
+			gpath_draw_outline(ctx, nine_path);
 			break;
 		case 10:
-			gpath_draw_filled(ctx, ten_path);
+			gpath_draw_outline(ctx, ten_path);
 			break;
 		case 11:
-			gpath_draw_filled(ctx, eleven_path);
+			gpath_draw_outline(ctx, eleven_path);
 			break;
 		default:
 			APP_LOG(APP_LOG_LEVEL_DEBUG, "Invalid Hour %d", cur_time);
+	}
+
+
+	//draw seconds
+	if (s_sec < 14) {
+		graphics_fill_rect(ctx, GRect(67,34 + (2*s_sec),10,2), 0,0);
+	} else if (s_sec >= 14) {
+		graphics_fill_rect(ctx, GRect(52,62, 40, 2), 0, 0);
+	}
+
+	if (s_sec >= 15 && s_sec < 29) {
+		uint8_t cur_sec = s_sec - 15;
+		APP_LOG(APP_LOG_LEVEL_DEBUG, "s_sec %d, cur_sec %d", s_sec, cur_sec);
+		graphics_fill_rect(ctx, GRect(120 - (2*cur_sec),79,2,10), 0,0);
+	} else if (s_sec >= 29) {
+		graphics_fill_rect(ctx, GRect(92,64, 2, 40), 0, 0);
+	}
+
+	if (s_sec >= 30 && s_sec < 44) {
+		uint8_t cur_sec = s_sec - 30;
+		graphics_fill_rect(ctx, GRect(67, 132 - (2*cur_sec), 10, 2), 0, 0);
+	} else if (s_sec >= 44) {
+		graphics_fill_rect(ctx, GRect(52, 104, 40, 2), 0, 0);
+	}
+
+	if (s_sec >= 45 && s_sec < 59) {
+		uint8_t cur_sec = s_sec - 45;
+		graphics_fill_rect(ctx, GRect(22 + (2*cur_sec), 79, 2, 10), 0, 0);
+	} else if (s_sec >= 59) {
+		graphics_fill_rect(ctx, GRect(50, 64, 2, 40), 0, 0);
 	}
 }
 

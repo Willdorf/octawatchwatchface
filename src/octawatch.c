@@ -271,6 +271,7 @@ static void setup_paths() {
 static void set_background_color(int color) {
 	GColor background_color = GColorFromHEX(color);
 	window_set_background_color(window, background_color);
+	text_layer_set_text_color(s_time_layer, gcolor_legible_over(background_color));
 }
 
 static void inbox_received_handler(DictionaryIterator *iter, void *context) {

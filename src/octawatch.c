@@ -9,6 +9,7 @@ static TextLayer *s_time_layer;
 
 static BitmapLayer *s_background_layer;
 static GBitmap *s_background_bitmap;
+static GColor background_color;
 
 static uint8_t s_hour;
 static uint8_t s_min;
@@ -150,7 +151,7 @@ static void draw_watchface(Layer *layer, GContext *ctx) {
 			APP_LOG(APP_LOG_LEVEL_DEBUG, "Invalid Hour %d", cur_time);
 	}
 
-	graphics_context_set_stroke_color(ctx, GColorBlack);
+	graphics_context_set_stroke_color(ctx, gcolor_legible_over(background_color));
 	graphics_context_set_stroke_width(ctx, 3);
 	switch (cur_time) {
 		case 0:
@@ -269,7 +270,7 @@ static void setup_paths() {
 }
 
 static void set_background_color(int color) {
-	GColor background_color = GColorFromHEX(color);
+	background_color = GColorFromHEX(color);
 	window_set_background_color(window, background_color);
 	text_layer_set_text_color(s_time_layer, gcolor_legible_over(background_color));
 }

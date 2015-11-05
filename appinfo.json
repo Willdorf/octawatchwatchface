@@ -21,7 +21,13 @@
 		"type" : "png",
 		"name" : "IMAGE_OCTAWATCH",
 		"file" : "octawatch.png"
-	}
+	},
+	{
+                "menuIcon" : true,
+                "type" : "png",
+                "name" : "IMAGE_MENU_ICON",
+                "file" : "menu.png"
+        }
     ]
   }
 }

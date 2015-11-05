@@ -120,7 +120,6 @@ static void draw_watchface(Layer *layer, GContext *ctx) {
 	graphics_context_set_fill_color(ctx, COLOR_FALLBACK(GColorWindsorTan, GColorWhite));
 	uint8_t cur_time = s_hour % 12;
 
-
 	switch (cur_time) {
 		case 11:
 			gpath_draw_filled(ctx, eleven_path);
@@ -250,6 +249,10 @@ static void draw_watchface(Layer *layer, GContext *ctx) {
 		uint8_t cur_min = s_min - 45;
 		graphics_fill_rect(ctx, GRect(22 + (2*cur_min) - 2, 79, 2, 10), 0, 0);
 	} else if (s_min == 0) {
+		//all segments filled
+		graphics_fill_rect(ctx, GRect(52, 65, 40, 10), 0, 0);
+		graphics_fill_rect(ctx, GRect(82, 64, 10, 40), 0, 0);
+		graphics_fill_rect(ctx, GRect(52, 94, 40, 10), 0, 0);
 		graphics_fill_rect(ctx, GRect(53, 64, 10, 40), 0, 0);
 	}
 }
@@ -288,6 +291,9 @@ static void inbox_received_handler(DictionaryIterator *iter, void *context) {
 
 		APP_LOG(APP_LOG_LEVEL_DEBUG, "background color: %d", background_color);
 	}
+
+	time_t start_time = time(NULL);
+	update_time(localtime(&start_time));
 }
 
 static void window_load(Window *window) {
@@ -320,6 +326,8 @@ static void window_load(Window *window) {
 
 	if (persist_read_int(KEY_BACKGROUND_COLOR)) {
 		set_background_color(persist_read_int(KEY_BACKGROUND_COLOR));
+	} else {
+		background_color = GColorDarkGray;
 	}
 }
 

@@ -1,8 +1,8 @@
 {
   "uuid": "70982bcb-4d75-42d3-9ff2-9459ec137b95",
-  "shortName": "octawatch",
-  "longName": "octawatch",
-  "companyName": "MakeAwesomeHappen",
+  "shortName": "OctaWatch",
+  "longName": "OctaWatch",
+  "companyName": "Willdorf",
   "versionLabel": "1.0",
   "sdkVersion": "3",
   "targetPlatforms": ["basalt"],

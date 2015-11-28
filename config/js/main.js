@@ -22,14 +22,26 @@ $submitButton.on('click', function() {
 	document.location = return_to + encodeURIComponent(JSON.stringify(getAndStoreConfigData()));
 });
 
+var degreeOption = 0;
+function tabClickHandler(value) {
+	console.log(value);
+	if (value == "Celsius") {
+		degreeOption = 0;
+	} else if (value == "Fahrenheit") {
+		degreeOption = 1;
+	}
+}
+
 function getAndStoreConfigData() {
 	var $backgroundColorPicker = $('#backgroundColorPicker');
 
 	var options = {
 		backgroundColor : $backgroundColorPicker.val(),
+		degreeOption : degreeOption
 	};
 
 	localStorage.willdorfoctawatchbackgroundColor = options.backgroundColor;
+	localStorage.willdorfoctawatchdegreeOption = options.degreeOption;
 
 	console.log('Got Options: ' + JSON.stringify(options));
 	return options;
@@ -38,8 +50,18 @@ function getAndStoreConfigData() {
 function loadOptions() {
 	var $backgroundColorPicker = $('#backgroundColorPicker');
 
-	if (localStorage.backgroundColor) {
+	if (localStorage.willdorfoctawatchbackgroundColor) {
 		$backgroundColorPicker[0].value = localStorage.willdorfoctawatchbackgroundColor;
+
+		//set the corresponding tab to active
+		degreeOption = localStorage.willdorfoctawatchdegreeOption;
+		if (degreeOption == 0) {
+			$('#Celsius').attr('class', 'tab-button active');
+		} else {
+			$('#Fahrenheit').attr('class', 'tab-button active');
+		}
+	} else {
+		$('#Celsius').attr('class', 'tab-button active');
 	}
 }
 
